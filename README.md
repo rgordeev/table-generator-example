@@ -99,5 +99,25 @@ values
 Database structure
 
 ```sql
+create table id_gen
+(
+  gen_key   varchar(255) not null
+    constraint id_gen_pkey
+      primary key,
+  gen_value bigint
+);
 
+alter table id_gen
+  owner to postgres;
+
+create table person
+(
+  id   integer not null
+    constraint person_pkey
+      primary key,
+  name varchar(255)
+);
+
+alter table person
+  owner to postgres;
 ```

@@ -1,13 +1,15 @@
 package ru.omnichat.demo.services;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.omnichat.demo.entity.Person;
 import ru.omnichat.demo.repositories.PersonRepository;
 
+@Slf4j
 @Service
-@Transactional
+@Transactional(rollbackFor = PersonService.Canceliator.class)
 public class PersonService {
 
     private PersonRepository personRepository;
@@ -22,6 +24,14 @@ public class PersonService {
         return person;
     }
 
+    public Person save4(Integer number) {
+        String name = String.format("Ivan %d", number);
+        Person p = new Person(name, number);
+        personRepository.save(p);
+        if (number % 10 == 0) throw new Canceliator();
+        return p;
+    }
+
 
     public Person save2(Person person) {
         Person p = save3(person);
@@ -33,4 +43,9 @@ public class PersonService {
         return personRepository.saveAndFlush(person);
     }
 
+
+    public static class Canceliator extends Error {
+        public Canceliator() {
+        }
+    }
 }
